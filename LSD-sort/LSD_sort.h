@@ -1,7 +1,7 @@
 #ifndef LSD_sort
 #define LSD_sort
 
-int Getdigit(int number, int digit)
+int Getdigit(unsigned int number, int digit)
 {
 	for (digit; digit > 1; digit--)
 	{
@@ -15,13 +15,16 @@ void LSDSort(int* first, int* last)
 {
 	int length = (abs((char)first - (char)last))/4;
 	length++;
-	int* buffer = new int[length];
+	unsigned int* buffer = new unsigned int[length];
+	unsigned int* first_u = new unsigned int[length];
+	for (int i = 0; i < length; i++)
+		first_u[i] = first[i] - std::numeric_limits<int>::min();
 	int indexes_of_numbers[10] = { 0 };
-	int max=abs(first[0]);
+	unsigned int max=(first_u[0]);
 	int digits=0;
 	for (int i = 1; i < length; i++)
-		if (max < abs(first[i]))
-			max = abs(first[i]);
+		if (max < (first_u[i]))
+			max = (first_u[i]);
 	while(max!=0)
 	{
 		digits++;
@@ -33,9 +36,9 @@ void LSDSort(int* first, int* last)
 		{
 			indexes_of_numbers[j] = 0;
 		}
-		for(int j=0; j<length; j++)
-		{ 
-			indexes_of_numbers[Getdigit(first[j], i)]++;
+		for (int j = 0; j < length; j++)
+		{
+			indexes_of_numbers[Getdigit(first_u[j], i)]++;
 		}
 		int count = 0;
 		for (int j = 0, temp; j < 10; j++)
@@ -46,12 +49,14 @@ void LSDSort(int* first, int* last)
 		}
 		for (int j = 0; j < length; j++)
 		{
-			buffer[indexes_of_numbers[Getdigit(first[j], i)]] = first[j];
-			indexes_of_numbers[Getdigit(first[j], i)]++;	
+			buffer[indexes_of_numbers[Getdigit(first_u[j], i)]] = first_u[j];
+			indexes_of_numbers[Getdigit(first_u[j], i)]++;
 		}
 		for (int j = 0; j < length; j++)
-			first[j] = buffer[j];
+			first_u[j] = buffer[j];
 	}
+	for (int j = 0; j < length; j++)
+		first[j] =( first_u[j] + std::numeric_limits<int>::min());
 }
 
 #endif
